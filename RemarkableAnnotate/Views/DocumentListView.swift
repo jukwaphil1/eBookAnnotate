@@ -2,12 +2,12 @@ import SwiftUI
 
 struct DocumentListView: View {
     @Bindable var vm: AppViewModel
-    let documents: [RemarkableDocument]
+    let nodes: [DeviceNode]
 
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Text("\(documents.count) document\(documents.count == 1 ? "" : "s")")
+                Text("reMarkable")
                     .font(.headline)
                 Spacer()
                 Button("Disconnect", action: vm.disconnect)
@@ -41,30 +41,60 @@ struct DocumentListView: View {
                 .background(.red.opacity(0.06))
             }
 
-            if documents.isEmpty {
-                Spacer()
-                Text("No documents found on device.")
-                    .foregroundStyle(.secondary)
-                Spacer()
-            } else {
-                List(documents) { doc in
-                    HStack {
-                        Text(doc.title)
-                            .font(.body)
-                        Spacer()
-                        if vm.extracting == doc.uuid {
-                            ProgressView().scaleEffect(0.7)
-                        } else {
-                            Button("Extract") { vm.extract(document: doc) }
-                                .buttonStyle(.bordered)
-                                .disabled(vm.extracting != nil)
-                        }
-                    }
-                    .padding(.vertical, 2)
+            List(nodes, children: \.optionalChildren) { node in
+                NodeRow(node: node, isExtracting: vm.extracting == node.id) {
+                    vm.extract(uuid: node.id, title: node.title)
                 }
-                .listStyle(.inset)
+            }
+            .listStyle(.inset)
+        }
+        .frame(minWidth: 480, minHeight: 360)
+    }
+}
+
+private struct NodeRow: View {
+    let node: DeviceNode
+    let isExtracting: Bool
+    let onExtract: () -> Void
+
+    var body: some View {
+        HStack {
+            Label {
+                Text(node.title)
+            } icon: {
+                Image(systemName: iconName)
+                    .foregroundStyle(iconColor)
+            }
+
+            Spacer()
+
+            if case .document = node {
+                if isExtracting {
+                    ProgressView().scaleEffect(0.7)
+                } else {
+                    Button("Extract", action: onExtract)
+                        .buttonStyle(.bordered)
+                        .controlSize(.small)
+                }
             }
         }
-        .frame(minWidth: 480, minHeight: 320)
+        .padding(.vertical, 2)
+    }
+
+    private var iconName: String {
+        if case .folder = node { return "folder.fill" }
+        return "doc.text"
+    }
+
+    private var iconColor: Color {
+        if case .folder = node { return .yellow }
+        return .secondary
+    }
+}
+
+private extension DeviceNode {
+    var optionalChildren: [DeviceNode]? {
+        if case .folder(_, _, let children) = self { return children.isEmpty ? nil : children }
+        return nil
     }
 }

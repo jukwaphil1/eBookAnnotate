@@ -113,29 +113,35 @@ def _is_highlighter(tool):
 # ---------------------------------------------------------------------------
 
 def cmd_list(host):
-    result = []
-    _collect_documents(host, "", result)
-    result.sort(key=lambda d: d["title"].lower())
-    _ok({"documents": result})
+    tree = _build_tree(host, "")
+    _ok({"tree": tree})
 
 
-def _collect_documents(host, folder_id, result):
-    """Recursively walk folders and collect all document entries."""
+def _build_tree(host, folder_id):
+    """Return a list of nodes: folders have children[], documents have uuid."""
     path = f"/documents/{folder_id}" if folder_id else "/documents/"
     try:
         items = get_json(host, path)
     except Exception:
-        return
-    for item in items:
+        return []
+
+    nodes = []
+    for item in sorted(items, key=lambda i: i.get("VissibleName", "").lower()):
         t = item.get("Type", "")
-        # Accept any type that looks like a document (not a folder/collection)
         if "collection" in t.lower():
-            _collect_documents(host, item["ID"], result)
+            nodes.append({
+                "kind": "folder",
+                "uuid": item["ID"],
+                "title": item.get("VissibleName", "Untitled"),
+                "children": _build_tree(host, item["ID"]),
+            })
         else:
-            result.append({
+            nodes.append({
+                "kind": "document",
                 "uuid": item["ID"],
                 "title": item.get("VissibleName", "Untitled"),
             })
+    return nodes
 
 
 # ---------------------------------------------------------------------------

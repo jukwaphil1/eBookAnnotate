@@ -59,40 +59,27 @@ final class ExtractionService {
     func diagnostics() async -> String {
         var lines: [String] = ["=== RemarkableAnnotate diagnostics ==="]
 
-        // Python candidates
         let whichResult = shellOutput("/bin/zsh", ["-l", "-c", "which python3"])
         lines.append("login-shell which python3: \(whichResult.trimmingCharacters(in: .whitespacesAndNewlines))")
 
-        let allCandidates = [
-            "/opt/homebrew/Caskroom/miniforge/base/bin/python3",
-            "/opt/homebrew/bin/python3",
-            "/usr/local/bin/python3",
-            "/usr/bin/python3",
-        ]
-        for c in allCandidates {
-            let exists = FileManager.default.fileExists(atPath: c)
-            lines.append("\(c): \(exists ? "exists" : "not found")")
+        for c in ["/opt/homebrew/Caskroom/miniforge/base/bin/python3",
+                  "/opt/homebrew/bin/python3", "/usr/local/bin/python3", "/usr/bin/python3"] {
+            lines.append("\(c): \(FileManager.default.fileExists(atPath: c) ? "exists" : "not found")")
         }
 
         lines.append("resolved python: \(pythonPath)")
 
-        // Version
-        let verResult = await run(python: ["--version"])
-        lines.append("python version: \(verResult.stdout.trimmingCharacters(in: .whitespacesAndNewlines)) \(verResult.stderr.trimmingCharacters(in: .whitespacesAndNewlines))")
+        let ver = await run(python: ["--version"])
+        lines.append("python version: \((ver.stdout + ver.stderr).trimmingCharacters(in: .whitespacesAndNewlines))")
 
-        // Import check
-        let importResult = await run(python: ["-c", "import requests, fitz, rmscene; print('imports ok')"])
-        lines.append("import check (exit \(importResult.code)):")
-        if !importResult.stdout.isEmpty { lines.append("  stdout: \(importResult.stdout.trimmingCharacters(in: .whitespacesAndNewlines))") }
-        if !importResult.stderr.isEmpty { lines.append("  stderr: \(importResult.stderr.trimmingCharacters(in: .whitespacesAndNewlines))") }
+        let imp = await run(python: ["-c", "import requests, fitz, rmscene; print('imports ok')"])
+        lines.append("import check (exit \(imp.code)): \((imp.stdout + imp.stderr).trimmingCharacters(in: .whitespacesAndNewlines))")
 
-        // pip install dry-run
-        let pipResult = await run(python: ["-m", "pip", "install", "--quiet", "requests", "pymupdf", "rmscene"])
-        lines.append("pip install (exit \(pipResult.code)):")
-        if !pipResult.stdout.isEmpty { lines.append("  stdout: \(pipResult.stdout.trimmingCharacters(in: .whitespacesAndNewlines))") }
-        if !pipResult.stderr.isEmpty { lines.append("  stderr: \(pipResult.stderr.trimmingCharacters(in: .whitespacesAndNewlines))") }
+        let pip = await run(python: ["-m", "pip", "install", "--quiet", "requests", "pymupdf", "rmscene"])
+        lines.append("pip install (exit \(pip.code)):")
+        if !pip.stdout.isEmpty { lines.append("  stdout: \(pip.stdout.trimmingCharacters(in: .whitespacesAndNewlines))") }
+        if !pip.stderr.isEmpty { lines.append("  stderr: \(pip.stderr.trimmingCharacters(in: .whitespacesAndNewlines))") }
 
-        // Script path
         lines.append("script path: \(scriptPath)")
         lines.append("script exists: \(FileManager.default.fileExists(atPath: scriptPath))")
 
@@ -110,12 +97,18 @@ final class ExtractionService {
         return (r.code == 0, r.stderr.isEmpty ? r.stdout : r.stderr)
     }
 
-    func listDocuments(host: String) async -> Result<[RemarkableDocument], Error> {
+    func listTree(host: String) async -> Result<[DeviceNode], Error> {
         let r = await run(script: ["list", host])
         guard r.code == 0 else {
             return .failure(AppError(r.stderr.isEmpty ? r.stdout : r.stderr))
         }
-        return decode(r.stdout)
+        struct R: Decodable { let tree: [DeviceNode] }
+        guard let data = r.stdout.data(using: .utf8) else { return .failure(AppError("Empty response")) }
+        do {
+            return .success(try JSONDecoder().decode(R.self, from: data).tree)
+        } catch {
+            return .failure(error)
+        }
     }
 
     func extractDocument(host: String, uuid: String, to url: URL) async -> Result<Int, Error> {
@@ -172,16 +165,6 @@ final class ExtractionService {
                     stderr: String(data: err.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
                 ))
             }
-        }
-    }
-
-    private func decode(_ json: String) -> Result<[RemarkableDocument], Error> {
-        struct R: Decodable { let documents: [RemarkableDocument] }
-        guard let data = json.data(using: .utf8) else { return .failure(AppError("Empty response")) }
-        do {
-            return .success(try JSONDecoder().decode(R.self, from: data).documents)
-        } catch {
-            return .failure(error)
         }
     }
 }

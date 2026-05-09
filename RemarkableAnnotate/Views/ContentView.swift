@@ -8,8 +8,8 @@ struct ContentView: View {
             switch vm.state {
             case .idle, .checkingDeps, .installingDeps, .connecting, .error:
                 ConnectionView(vm: vm)
-            case .connected(let docs):
-                DocumentListView(vm: vm, documents: docs)
+            case .connected(let nodes):
+                DocumentListView(vm: vm, nodes: nodes)
             }
         }
         .frame(minWidth: 480)

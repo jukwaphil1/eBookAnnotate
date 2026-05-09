@@ -10,7 +10,7 @@ final class AppViewModel {
         case checkingDeps
         case installingDeps
         case connecting
-        case connected([RemarkableDocument])
+        case connected([DeviceNode])
         case error(String)
     }
 
@@ -60,14 +60,14 @@ final class AppViewModel {
         }
     }
 
-    func extract(document: RemarkableDocument) {
+    func extract(uuid: String, title: String) {
         let panel = NSSavePanel()
-        panel.nameFieldStringValue = document.title.replacingOccurrences(of: "/", with: "-") + ".md"
+        panel.nameFieldStringValue = title.replacingOccurrences(of: "/", with: "-") + ".md"
         panel.allowedContentTypes = [.init(filenameExtension: "md")!]
         panel.canCreateDirectories = true
         guard panel.runModal() == .OK, let url = panel.url else { return }
 
-        let h = host, uuid = document.uuid
+        let h = host
         extracting = uuid
         lastResult = nil
 
@@ -77,7 +77,7 @@ final class AppViewModel {
             switch result {
             case .success(let count):
                 if count == 0 {
-                    lastResult = "No highlights found in \(document.title)."
+                    lastResult = "No highlights found in \"\(title)\"."
                 } else {
                     lastResult = "Saved \(count) highlight\(count == 1 ? "" : "s") to \(url.lastPathComponent)"
                 }
@@ -91,10 +91,10 @@ final class AppViewModel {
 
     private func doConnect() async {
         state = .connecting
-        let result = await service.listDocuments(host: host)
+        let result = await service.listTree(host: host)
         switch result {
-        case .success(let docs):
-            state = .connected(docs)
+        case .success(let nodes):
+            state = .connected(nodes)
         case .failure(let err):
             state = .error(err.localizedDescription)
         }
