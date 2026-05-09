@@ -16,6 +16,7 @@ import io
 import os
 import zipfile
 import tempfile
+import traceback
 
 BASE_URL = "http://{host}"
 
@@ -125,21 +126,28 @@ def _build_tree(host, folder_id):
     except Exception:
         return []
 
+    def sort_key(i):
+        return (i.get("VissibleName") or "").lower()
+
     nodes = []
-    for item in sorted(items, key=lambda i: i.get("VissibleName", "").lower()):
-        t = item.get("Type", "")
-        if "collection" in t.lower():
+    for item in sorted(items, key=sort_key):
+        t = (item.get("Type") or "").lower()
+        title = item.get("VissibleName") or "Untitled"
+        uuid = item.get("ID") or ""
+        if not uuid:
+            continue
+        if "collection" in t:
             nodes.append({
                 "kind": "folder",
-                "uuid": item["ID"],
-                "title": item.get("VissibleName", "Untitled"),
-                "children": _build_tree(host, item["ID"]),
+                "uuid": uuid,
+                "title": title,
+                "children": _build_tree(host, uuid),
             })
         else:
             nodes.append({
                 "kind": "document",
-                "uuid": item["ID"],
-                "title": item.get("VissibleName", "Untitled"),
+                "uuid": uuid,
+                "title": title,
             })
     return nodes
 
@@ -290,4 +298,4 @@ if __name__ == "__main__":
         else:
             _err(f"Unknown command: {command}")
     except Exception as e:
-        _err(str(e))
+        _err(str(e) + "\n" + traceback.format_exc())
