@@ -56,7 +56,7 @@ final class ExtractionService {
 
     // MARK: - Public
 
-    func diagnostics() async -> String {
+    func diagnostics(host: String) async -> String {
         var lines: [String] = ["=== RemarkableAnnotate diagnostics ==="]
 
         let whichResult = shellOutput("/bin/zsh", ["-l", "-c", "which python3"])
@@ -75,13 +75,15 @@ final class ExtractionService {
         let imp = await run(python: ["-c", "import requests, fitz, rmscene; print('imports ok')"])
         lines.append("import check (exit \(imp.code)): \((imp.stdout + imp.stderr).trimmingCharacters(in: .whitespacesAndNewlines))")
 
-        let pip = await run(python: ["-m", "pip", "install", "--quiet", "requests", "pymupdf", "rmscene"])
-        lines.append("pip install (exit \(pip.code)):")
-        if !pip.stdout.isEmpty { lines.append("  stdout: \(pip.stdout.trimmingCharacters(in: .whitespacesAndNewlines))") }
-        if !pip.stderr.isEmpty { lines.append("  stderr: \(pip.stderr.trimmingCharacters(in: .whitespacesAndNewlines))") }
-
         lines.append("script path: \(scriptPath)")
         lines.append("script exists: \(FileManager.default.fileExists(atPath: scriptPath))")
+
+        lines.append("")
+        lines.append("--- list command (host: \(host)) ---")
+        let list = await run(script: ["list", host])
+        lines.append("exit code: \(list.code)")
+        if !list.stdout.isEmpty { lines.append("stdout:\n\(list.stdout)") }
+        if !list.stderr.isEmpty { lines.append("stderr:\n\(list.stderr)") }
 
         return lines.joined(separator: "\n")
     }

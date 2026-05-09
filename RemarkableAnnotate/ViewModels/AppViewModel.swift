@@ -55,8 +55,9 @@ final class AppViewModel {
     func runDiagnostics() {
         diagnosticOutput = "Running…"
         showDiagnostics = true
+        let h = host
         Task {
-            diagnosticOutput = await service.diagnostics()
+            diagnosticOutput = await service.diagnostics(host: h)
         }
     }
 
