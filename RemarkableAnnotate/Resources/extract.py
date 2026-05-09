@@ -113,17 +113,27 @@ def _is_highlighter(tool):
 # ---------------------------------------------------------------------------
 
 def cmd_list(host):
-    docs = get_json(host, "/documents/")
     result = []
-    for d in docs:
-        if d.get("Type") != "DocumentType":
-            continue
-        result.append({
-            "uuid": d["ID"],
-            "title": d.get("VissibleName", "Untitled"),
-        })
+    _collect_documents(host, "", result)
     result.sort(key=lambda d: d["title"].lower())
     _ok({"documents": result})
+
+
+def _collect_documents(host, folder_id, result):
+    """Recursively walk folders and collect all DocumentType entries."""
+    path = f"/documents/{folder_id}" if folder_id else "/documents/"
+    try:
+        items = get_json(host, path)
+    except Exception:
+        return
+    for item in items:
+        if item.get("Type") == "DocumentType":
+            result.append({
+                "uuid": item["ID"],
+                "title": item.get("VissibleName", "Untitled"),
+            })
+        elif item.get("Type") == "CollectionType":
+            _collect_documents(host, item["ID"], result)
 
 
 # ---------------------------------------------------------------------------
