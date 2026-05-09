@@ -1,0 +1,27 @@
+name: RemarkableAnnotate
+options:
+  bundleIdPrefix: com.jukwa
+  deploymentTarget:
+    macOS: "14.0"
+  xcodeVersion: "26.0"
+
+targets:
+  RemarkableAnnotate:
+    type: application
+    platform: macOS
+    sources:
+      - RemarkableAnnotate
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.jukwa.remarkableannotate
+        PRODUCT_NAME: RemarkableAnnotate
+        SWIFT_VERSION: "5.9"
+        MACOSX_DEPLOYMENT_TARGET: "14.0"
+        DEVELOPMENT_TEAM: 5RX8NB9H37
+        CODE_SIGN_STYLE: Automatic
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: RemarkableAnnotate
+        INFOPLIST_KEY_NSHumanReadableCopyright: ""
+        CURRENT_PROJECT_VERSION: 1
+        MARKETING_VERSION: 1.0
+        CODE_SIGN_ENTITLEMENTS: RemarkableAnnotate/RemarkableAnnotate.entitlements

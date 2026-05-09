@@ -1,0 +1,391 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		40D4DCFF87B27ACEAD931799 /* DocumentListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E4210709C3524551B8E5A8 /* DocumentListView.swift */; };
+		52CEC0358568FF255B808455 /* ConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD82D27897A390F28F7EF1AC /* ConnectionView.swift */; };
+		69C50ECF623003FEF52DEF86 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25802F7420A31BB31C9D989E /* ContentView.swift */; };
+		6C8D213465F0AFA81C513E91 /* extract.py in Resources */ = {isa = PBXBuildFile; fileRef = FABEA10C91931736AB08A157 /* extract.py */; };
+		70CF289F55F90794AAC4F631 /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309307E73E29CCF6D10007E1 /* AppViewModel.swift */; };
+		A6258695E9645FC78BCC687C /* RemarkableDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3154636E75C2A734F86C7EC4 /* RemarkableDocument.swift */; };
+		C19A816F926B6105FDE63E01 /* RemarkableAnnotateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8BA51AA80BF878BE088F69 /* RemarkableAnnotateApp.swift */; };
+		E49BF25BA5EE3EADF4A403B6 /* ExtractionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E36D8FB5F68682971982E7A1 /* ExtractionService.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		25802F7420A31BB31C9D989E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		29835751331DB0F0F883FB21 /* RemarkableAnnotate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RemarkableAnnotate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		309307E73E29CCF6D10007E1 /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
+		3154636E75C2A734F86C7EC4 /* RemarkableDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemarkableDocument.swift; sourceTree = "<group>"; };
+		45E4210709C3524551B8E5A8 /* DocumentListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentListView.swift; sourceTree = "<group>"; };
+		CD82D27897A390F28F7EF1AC /* ConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionView.swift; sourceTree = "<group>"; };
+		CD8BA51AA80BF878BE088F69 /* RemarkableAnnotateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemarkableAnnotateApp.swift; sourceTree = "<group>"; };
+		E36D8FB5F68682971982E7A1 /* ExtractionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtractionService.swift; sourceTree = "<group>"; };
+		F1189745504C001513B7CAF4 /* RemarkableAnnotate.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RemarkableAnnotate.entitlements; sourceTree = "<group>"; };
+		FABEA10C91931736AB08A157 /* extract.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = extract.py; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0246BDA5B1D42FFA260BFB98 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				CD82D27897A390F28F7EF1AC /* ConnectionView.swift */,
+				25802F7420A31BB31C9D989E /* ContentView.swift */,
+				45E4210709C3524551B8E5A8 /* DocumentListView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		1F1995EC080B033B722B93A5 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				FABEA10C91931736AB08A157 /* extract.py */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		491B88E889E74F1004DD14B7 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				3154636E75C2A734F86C7EC4 /* RemarkableDocument.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		5D7543BC097CA409B206021A /* App */ = {
+			isa = PBXGroup;
+			children = (
+				CD8BA51AA80BF878BE088F69 /* RemarkableAnnotateApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		698F61D6ADDC8BB1B5F0A40A = {
+			isa = PBXGroup;
+			children = (
+				B2093955BFA6F1C35EE5FD31 /* RemarkableAnnotate */,
+				EFFE561998EF00D743269124 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		83C69276AB5193B5E2543641 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				309307E73E29CCF6D10007E1 /* AppViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		B2093955BFA6F1C35EE5FD31 /* RemarkableAnnotate */ = {
+			isa = PBXGroup;
+			children = (
+				F1189745504C001513B7CAF4 /* RemarkableAnnotate.entitlements */,
+				5D7543BC097CA409B206021A /* App */,
+				491B88E889E74F1004DD14B7 /* Models */,
+				1F1995EC080B033B722B93A5 /* Resources */,
+				E286E1D00A8DD2BB32F0235A /* Services */,
+				83C69276AB5193B5E2543641 /* ViewModels */,
+				0246BDA5B1D42FFA260BFB98 /* Views */,
+			);
+			path = RemarkableAnnotate;
+			sourceTree = "<group>";
+		};
+		E286E1D00A8DD2BB32F0235A /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				E36D8FB5F68682971982E7A1 /* ExtractionService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		EFFE561998EF00D743269124 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				29835751331DB0F0F883FB21 /* RemarkableAnnotate.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EFB88F133A0CF6CCFFDFBE83 /* RemarkableAnnotate */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 30741AD52EEBDD60CFE63AF8 /* Build configuration list for PBXNativeTarget "RemarkableAnnotate" */;
+			buildPhases = (
+				EBB031A655195FBBCF7637AA /* Sources */,
+				C305998B0D9C10CB91591CC0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RemarkableAnnotate;
+			packageProductDependencies = (
+			);
+			productName = RemarkableAnnotate;
+			productReference = 29835751331DB0F0F883FB21 /* RemarkableAnnotate.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BCD213E5E0D5F114E2C254EC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					EFB88F133A0CF6CCFFDFBE83 = {
+						DevelopmentTeam = 5RX8NB9H37;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 1803C019452DF2D35B88194F /* Build configuration list for PBXProject "RemarkableAnnotate" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 698F61D6ADDC8BB1B5F0A40A;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = EFFE561998EF00D743269124 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EFB88F133A0CF6CCFFDFBE83 /* RemarkableAnnotate */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C305998B0D9C10CB91591CC0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6C8D213465F0AFA81C513E91 /* extract.py in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EBB031A655195FBBCF7637AA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				70CF289F55F90794AAC4F631 /* AppViewModel.swift in Sources */,
+				52CEC0358568FF255B808455 /* ConnectionView.swift in Sources */,
+				69C50ECF623003FEF52DEF86 /* ContentView.swift in Sources */,
+				40D4DCFF87B27ACEAD931799 /* DocumentListView.swift in Sources */,
+				E49BF25BA5EE3EADF4A403B6 /* ExtractionService.swift in Sources */,
+				C19A816F926B6105FDE63E01 /* RemarkableAnnotateApp.swift in Sources */,
+				A6258695E9645FC78BCC687C /* RemarkableDocument.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0BC8A938643398CC887705A0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		43A2B25A009A5E3DA9A220B3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = RemarkableAnnotate/RemarkableAnnotate.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5RX8NB9H37;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = RemarkableAnnotate;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jukwa.remarkableannotate;
+				PRODUCT_NAME = RemarkableAnnotate;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		A9F0A4DBE5B9BF0D7CD149B6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		FE21D58FE78BECC77F44432E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = RemarkableAnnotate/RemarkableAnnotate.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5RX8NB9H37;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = RemarkableAnnotate;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jukwa.remarkableannotate;
+				PRODUCT_NAME = RemarkableAnnotate;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1803C019452DF2D35B88194F /* Build configuration list for PBXProject "RemarkableAnnotate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A9F0A4DBE5B9BF0D7CD149B6 /* Debug */,
+				0BC8A938643398CC887705A0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		30741AD52EEBDD60CFE63AF8 /* Build configuration list for PBXNativeTarget "RemarkableAnnotate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FE21D58FE78BECC77F44432E /* Debug */,
+				43A2B25A009A5E3DA9A220B3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BCD213E5E0D5F114E2C254EC /* Project object */;
+}
