@@ -11,25 +11,18 @@ struct ConnectionView: View {
                     .foregroundStyle(.primary)
                 Text("RemarkableAnnotate")
                     .font(.title2.bold())
-                Text("Connect your reMarkable 2 via USB, then enter the SSH password shown on the device (Settings → Help → Copyrights and licences).")
+                Text("Connect your reMarkable via USB, then tap Connect. No password or Developer Mode needed.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: 360)
             }
 
-            VStack(alignment: .leading, spacing: 8) {
-                LabeledContent("Host") {
-                    TextField("10.11.99.1", text: $vm.host)
-                        .textFieldStyle(.roundedBorder)
-                        .frame(width: 200)
-                }
-                LabeledContent("Password") {
-                    SecureField("device password", text: $vm.password)
-                        .textFieldStyle(.roundedBorder)
-                        .frame(width: 200)
-                        .onSubmit { vm.connect() }
-                }
+            LabeledContent("Host") {
+                TextField("10.11.99.1", text: $vm.host)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: 160)
+                    .onSubmit { vm.connect() }
             }
 
             VStack(spacing: 8) {
@@ -44,7 +37,7 @@ struct ConnectionView: View {
                     }
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(vm.password.isEmpty || vm.isWorking)
+                .disabled(vm.host.isEmpty || vm.isWorking)
                 .keyboardShortcut(.return, modifiers: [])
 
                 if case .error(let msg) = vm.state {

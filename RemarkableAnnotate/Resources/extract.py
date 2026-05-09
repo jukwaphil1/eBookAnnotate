@@ -1,70 +1,84 @@
 #!/usr/bin/env python3
 """
-RemarkableAnnotate — extract highlighted text from reMarkable 2 PDFs over SSH.
+RemarkableAnnotate — extract highlighted text from reMarkable PDFs via USB web interface.
+
+The reMarkable USB web interface runs at http://10.11.99.1 when the device is connected
+via USB. No SSH, no Developer Mode, no password required.
 
 Usage:
-  python3 extract.py list    <host> <password>
-  python3 extract.py extract <host> <password> <uuid> <output_path>
+  python3 extract.py list    <host>
+  python3 extract.py extract <host> <uuid> <output_path>
 """
 
 import sys
 import json
 import io
 import os
+import zipfile
 import tempfile
 
-XOCHITL = "/home/root/.local/share/remarkable/xochitl"
+BASE_URL = "http://{host}"
 
 
 # ---------------------------------------------------------------------------
-# SSH helpers
+# HTTP helpers
 # ---------------------------------------------------------------------------
 
-def ssh_connect(host, password):
-    import paramiko
-    client = paramiko.SSHClient()
-    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    client.connect(host, username="root", password=password, timeout=10)
-    return client
+def get_json(host, path):
+    import requests
+    resp = requests.get(f"http://{host}{path}", timeout=10)
+    resp.raise_for_status()
+    return resp.json()
 
 
-def read_remote_json(sftp, path):
+def download_bytes(host, path, timeout=120):
+    import requests
+    resp = requests.get(f"http://{host}{path}", timeout=timeout, stream=True)
+    resp.raise_for_status()
+    buf = io.BytesIO()
+    for chunk in resp.iter_content(chunk_size=65536):
+        buf.write(chunk)
+    buf.seek(0)
+    return buf
+
+
+# ---------------------------------------------------------------------------
+# .rmdoc zip helpers
+# ---------------------------------------------------------------------------
+
+def read_zip_json(zf, name):
     try:
-        with sftp.open(path) as f:
+        with zf.open(name) as f:
             return json.load(f)
     except Exception:
         return None
 
 
-# ---------------------------------------------------------------------------
-# reMarkable page list helpers
-# ---------------------------------------------------------------------------
-
 def page_list(content):
-    """Return list of {id, pdf_index} dicts from a .content JSON object."""
-    # New firmware: cPages.pages[].{id, idx.value}
+    """Return list of {id, pdf_index} from .content JSON."""
     c_pages = content.get("cPages", {}).get("pages", [])
     if c_pages:
         result = []
         for i, p in enumerate(c_pages):
-            result.append({"id": p.get("id", ""), "pdf_index": p.get("idx", {}).get("value", i)})
+            result.append({
+                "id": p.get("id", ""),
+                "pdf_index": p.get("idx", {}).get("value", i) if isinstance(p.get("idx"), dict) else i,
+            })
         return result
-
-    # Older firmware: pages[] is a flat list of UUIDs
     old = content.get("pages", [])
     return [{"id": pid, "pdf_index": i} for i, pid in enumerate(old)]
 
 
 # ---------------------------------------------------------------------------
-# .rm highlight parsing
+# .rm highlight parsing (rmscene)
 # ---------------------------------------------------------------------------
 
-def highlights_in_rm_bytes(data):
+def highlight_boxes(rm_bytes):
     """Return list of (x0,y0,x1,y1) bounding boxes for highlight strokes."""
     try:
         import rmscene
         from rmscene import read_blocks, SceneLineItemBlock
-        blocks = list(read_blocks(io.BytesIO(data)))
+        blocks = list(read_blocks(io.BytesIO(rm_bytes)))
     except Exception:
         return []
 
@@ -94,111 +108,108 @@ def _is_highlighter(tool):
     return "HIGHLIGHTER" in str(tool).upper()
 
 
-def highlight_count_in_rm_bytes(data):
-    return len(highlights_in_rm_bytes(data))
-
-
 # ---------------------------------------------------------------------------
 # list command
 # ---------------------------------------------------------------------------
 
-def cmd_list(host, password):
-    client = ssh_connect(host, password)
-    sftp = client.open_sftp()
-    try:
-        entries = sftp.listdir(XOCHITL)
-        uuids = [e[:-9] for e in entries if e.endswith(".metadata")]
-
-        documents = []
-        for uuid in uuids:
-            meta = read_remote_json(sftp, f"{XOCHITL}/{uuid}.metadata")
-            if not meta or meta.get("type") != "DocumentType":
-                continue
-
-            content = read_remote_json(sftp, f"{XOCHITL}/{uuid}.content")
-            if not content or content.get("fileType") != "pdf":
-                continue
-
-            pages = page_list(content)
-            total_highlights = 0
-            for pg in pages:
-                rm_path = f"{XOCHITL}/{uuid}/{pg['id']}.rm"
-                try:
-                    with sftp.open(rm_path, "rb") as f:
-                        data = f.read()
-                    total_highlights += highlight_count_in_rm_bytes(data)
-                except Exception:
-                    pass
-
-            if total_highlights == 0:
-                continue
-
-            documents.append({
-                "uuid": uuid,
-                "title": meta.get("visibleName", "Untitled"),
-                "highlight_count": total_highlights,
-                "page_count": len(pages),
-            })
-
-        documents.sort(key=lambda d: d["title"].lower())
-        _ok({"documents": documents})
-    finally:
-        sftp.close()
-        client.close()
+def cmd_list(host):
+    docs = get_json(host, "/documents/")
+    result = []
+    for d in docs:
+        if d.get("Type") != "DocumentType":
+            continue
+        result.append({
+            "uuid": d["ID"],
+            "title": d.get("VissibleName", "Untitled"),
+        })
+    result.sort(key=lambda d: d["title"].lower())
+    _ok({"documents": result})
 
 
 # ---------------------------------------------------------------------------
 # extract command
 # ---------------------------------------------------------------------------
 
-def cmd_extract(host, password, uuid, output_path):
+def cmd_extract(host, uuid, output_path):
     import fitz  # PyMuPDF
 
-    client = ssh_connect(host, password)
-    sftp = client.open_sftp()
-    try:
-        meta = read_remote_json(sftp, f"{XOCHITL}/{uuid}.metadata")
-        content = read_remote_json(sftp, f"{XOCHITL}/{uuid}.content")
-        title = meta.get("visibleName", "Untitled") if meta else "Untitled"
+    rmdoc_buf = download_bytes(host, f"/download/{uuid}/rmdoc")
 
-        tmp_pdf = tempfile.NamedTemporaryFile(suffix=".pdf", delete=False)
-        tmp_pdf.close()
-        sftp.get(f"{XOCHITL}/{uuid}.pdf", tmp_pdf.name)
+    with zipfile.ZipFile(rmdoc_buf) as zf:
+        names = zf.namelist()
 
-        pdf_doc = fitz.open(tmp_pdf.name)
-        pages = page_list(content or {})
+        # Find the .content and .pdf files (may be at root or inside a folder)
+        content_name = _find(names, lambda n: n.endswith(".content"))
+        pdf_name = _find(names, lambda n: n.endswith(".pdf"))
 
-        # Collect (1-based page num, text) tuples
+        if not content_name:
+            _err("No .content file found in rmdoc bundle")
+        if not pdf_name:
+            _err("No PDF found in rmdoc bundle — document may not be a PDF annotation")
+
+        content = read_zip_json(zf, content_name)
+        if not content:
+            _err("Could not read .content file")
+
+        # Derive the UUID prefix used for page files
+        prefix = content_name[:-len(".content")]  # e.g. "abc123" or "folder/abc123"
+
+        # Extract PDF to temp file
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
+            tmp_path = tmp.name
+        with zf.open(pdf_name) as src, open(tmp_path, "wb") as dst:
+            dst.write(src.read())
+
+        pdf_doc = fitz.open(tmp_path)
+        pages = page_list(content)
+
         hits = []
         for pg in pages:
-            rm_path = f"{XOCHITL}/{uuid}/{pg['id']}.rm"
-            try:
-                with sftp.open(rm_path, "rb") as f:
-                    rm_data = f.read()
-            except Exception:
+            rm_name = f"{prefix}/{pg['id']}.rm"
+            if rm_name not in names:
+                # Try without subfolder (some older bundles)
+                rm_name = f"{pg['id']}.rm"
+            if rm_name not in names:
                 continue
 
             pdf_idx = pg["pdf_index"]
             if pdf_idx >= len(pdf_doc):
                 continue
 
+            with zf.open(rm_name) as f:
+                rm_bytes = f.read()
+
             pdf_page = pdf_doc[pdf_idx]
-            for text in _texts_for_page(rm_data, pdf_page):
+            for text in _texts_for_page(rm_bytes, pdf_page):
                 hits.append((pdf_idx + 1, text))
 
         pdf_doc.close()
-        os.unlink(tmp_pdf.name)
+        os.unlink(tmp_path)
 
-        _write_markdown(output_path, title, hits)
-        _ok({"highlight_count": len(hits)})
-    finally:
-        sftp.close()
-        client.close()
+    # Write Markdown
+    title = _find_title(host, uuid)
+    _write_markdown(output_path, title, hits)
+    _ok({"highlight_count": len(hits)})
 
 
-def _texts_for_page(rm_data, pdf_page):
+def _find_title(host, uuid):
+    try:
+        docs = get_json(host, "/documents/")
+        for d in docs:
+            if d.get("ID") == uuid:
+                return d.get("VissibleName", "Untitled")
+    except Exception:
+        pass
+    return "Untitled"
+
+
+def _find(names, predicate):
+    return next((n for n in names if predicate(n)), None)
+
+
+def _texts_for_page(rm_bytes, pdf_page):
     import fitz
-    boxes = highlights_in_rm_bytes(rm_data)
+    boxes = highlight_boxes(rm_bytes)
     scale = pdf_page.rect.width / 1404.0
     texts = []
     for (x0, y0, x1, y1) in boxes:
@@ -219,7 +230,6 @@ def _write_markdown(path, title, hits):
         if page_num != current_page:
             current_page = page_num
             lines.append(f"\n## Page {page_num}\n")
-        # Collapse internal newlines for inline quote
         inline = " ".join(text.split())
         lines.append(f"> {inline}\n")
     with open(path, "w", encoding="utf-8") as f:
@@ -247,18 +257,18 @@ def _err(msg):
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    if len(sys.argv) < 4:
-        _err("Usage: extract.py <list|extract> <host> <password> [uuid output_path]")
+    if len(sys.argv) < 3:
+        _err("Usage: extract.py <list|extract> <host> [uuid output_path]")
 
-    command, host, password = sys.argv[1], sys.argv[2], sys.argv[3]
+    command, host = sys.argv[1], sys.argv[2]
 
     try:
         if command == "list":
-            cmd_list(host, password)
+            cmd_list(host)
         elif command == "extract":
-            if len(sys.argv) < 6:
+            if len(sys.argv) < 5:
                 _err("extract requires <uuid> and <output_path>")
-            cmd_extract(host, password, sys.argv[4], sys.argv[5])
+            cmd_extract(host, sys.argv[3], sys.argv[4])
         else:
             _err(f"Unknown command: {command}")
     except Exception as e:

@@ -4,7 +4,6 @@ import AppKit
 @MainActor @Observable
 final class AppViewModel {
     var host = "10.11.99.1"
-    var password = ""
 
     enum State {
         case idle
@@ -16,8 +15,8 @@ final class AppViewModel {
     }
 
     var state: State = .idle
-    var extracting: String? = nil   // uuid currently being extracted
-    var lastResult: String? = nil   // success message after extraction
+    var extracting: String? = nil
+    var lastResult: String? = nil
 
     private let service = ExtractionService.shared
 
@@ -49,7 +48,6 @@ final class AppViewModel {
 
     func disconnect() {
         state = .idle
-        password = ""
     }
 
     func extract(document: RemarkableDocument) {
@@ -59,16 +57,20 @@ final class AppViewModel {
         panel.canCreateDirectories = true
         guard panel.runModal() == .OK, let url = panel.url else { return }
 
-        let h = host, pw = password, uuid = document.uuid
+        let h = host, uuid = document.uuid
         extracting = uuid
         lastResult = nil
 
         Task {
-            let result = await service.extractDocument(host: h, password: pw, uuid: uuid, to: url)
+            let result = await service.extractDocument(host: h, uuid: uuid, to: url)
             extracting = nil
             switch result {
             case .success(let count):
-                lastResult = "Saved \(count) highlight\(count == 1 ? "" : "s") to \(url.lastPathComponent)"
+                if count == 0 {
+                    lastResult = "No highlights found in \(document.title)."
+                } else {
+                    lastResult = "Saved \(count) highlight\(count == 1 ? "" : "s") to \(url.lastPathComponent)"
+                }
             case .failure(let err):
                 state = .error(err.localizedDescription)
             }
@@ -79,7 +81,7 @@ final class AppViewModel {
 
     private func doConnect() async {
         state = .connecting
-        let result = await service.listDocuments(host: host, password: password)
+        let result = await service.listDocuments(host: host)
         switch result {
         case .success(let docs):
             state = .connected(docs)

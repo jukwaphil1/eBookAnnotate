@@ -6,9 +6,8 @@ struct DocumentListView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Toolbar
             HStack {
-                Text("\(documents.count) annotated document\(documents.count == 1 ? "" : "s")")
+                Text("\(documents.count) document\(documents.count == 1 ? "" : "s")")
                     .font(.headline)
                 Spacer()
                 Button("Disconnect", action: vm.disconnect)
@@ -44,45 +43,28 @@ struct DocumentListView: View {
 
             if documents.isEmpty {
                 Spacer()
-                Text("No highlighted PDFs found on device.")
+                Text("No documents found on device.")
                     .foregroundStyle(.secondary)
                 Spacer()
             } else {
                 List(documents) { doc in
-                    DocumentRow(doc: doc, isExtracting: vm.extracting == doc.uuid) {
-                        vm.extract(document: doc)
+                    HStack {
+                        Text(doc.title)
+                            .font(.body)
+                        Spacer()
+                        if vm.extracting == doc.uuid {
+                            ProgressView().scaleEffect(0.7)
+                        } else {
+                            Button("Extract") { vm.extract(document: doc) }
+                                .buttonStyle(.bordered)
+                                .disabled(vm.extracting != nil)
+                        }
                     }
+                    .padding(.vertical, 2)
                 }
                 .listStyle(.inset)
             }
         }
         .frame(minWidth: 480, minHeight: 320)
-    }
-}
-
-private struct DocumentRow: View {
-    let doc: RemarkableDocument
-    let isExtracting: Bool
-    let onExtract: () -> Void
-
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(doc.title)
-                    .font(.body)
-                Text("\(doc.highlightCount) highlight\(doc.highlightCount == 1 ? "" : "s") · \(doc.pageCount) pages")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            Spacer()
-            if isExtracting {
-                ProgressView().scaleEffect(0.7)
-            } else {
-                Button("Extract", action: onExtract)
-                    .buttonStyle(.bordered)
-                    .disabled(false)
-            }
-        }
-        .padding(.vertical, 4)
     }
 }

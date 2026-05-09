@@ -17,26 +17,26 @@ final class ExtractionService {
     }
 
     func checkDependencies() async -> Bool {
-        let r = await run(python: ["-c", "import paramiko, fitz, rmscene"])
+        let r = await run(python: ["-c", "import requests, fitz, rmscene"])
         return r.code == 0
     }
 
     func installDependencies() async -> (success: Bool, error: String) {
         let r = await run(python: ["-m", "pip", "install", "--user", "--quiet",
-                                   "paramiko", "pymupdf", "rmscene"])
+                                   "requests", "pymupdf", "rmscene"])
         return (r.code == 0, r.stderr)
     }
 
-    func listDocuments(host: String, password: String) async -> Result<[RemarkableDocument], Error> {
-        let r = await run(script: ["list", host, password])
+    func listDocuments(host: String) async -> Result<[RemarkableDocument], Error> {
+        let r = await run(script: ["list", host])
         guard r.code == 0 else {
             return .failure(AppError(r.stderr.isEmpty ? r.stdout : r.stderr))
         }
         return decode(r.stdout)
     }
 
-    func extractDocument(host: String, password: String, uuid: String, to url: URL) async -> Result<Int, Error> {
-        let r = await run(script: ["extract", host, password, uuid, url.path])
+    func extractDocument(host: String, uuid: String, to url: URL) async -> Result<Int, Error> {
+        let r = await run(script: ["extract", host, uuid, url.path])
         guard r.code == 0 else {
             return .failure(AppError(r.stderr.isEmpty ? r.stdout : r.stderr))
         }
