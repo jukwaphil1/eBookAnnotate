@@ -3,29 +3,54 @@ import Foundation
 final class ExtractionService {
     static let shared = ExtractionService()
 
+    // Resolved once and cached — finding the right Python involves process spawning.
+    private var _pythonPath: String?
     private var pythonPath: String {
-        // Ask the shell for python3 so we respect the user's PATH / conda / pyenv / nvm etc.
-        let p = Process()
-        p.executableURL = URL(fileURLWithPath: "/bin/zsh")
-        p.arguments = ["-l", "-c", "which python3"]
-        let pipe = Pipe()
-        p.standardOutput = pipe
-        p.standardError = Pipe()
-        if let _ = try? p.run() {
-            p.waitUntilExit()
-            let out = String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8)?
+        if let cached = _pythonPath { return cached }
+        let path = resolvePython()
+        _pythonPath = path
+        return path
+    }
+
+    private func resolvePython() -> String {
+        // Collect candidates: login-shell `which python3` plus well-known locations.
+        var candidates: [String] = []
+
+        let whichProcess = Process()
+        whichProcess.executableURL = URL(fileURLWithPath: "/bin/zsh")
+        whichProcess.arguments = ["-l", "-c", "which python3"]
+        let whichPipe = Pipe()
+        whichProcess.standardOutput = whichPipe
+        whichProcess.standardError = Pipe()
+        if let _ = try? whichProcess.run() {
+            whichProcess.waitUntilExit()
+            let out = String(data: whichPipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8)?
                 .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-            if !out.isEmpty && FileManager.default.fileExists(atPath: out) {
-                return out
-            }
+            if !out.isEmpty { candidates.append(out) }
         }
-        // Fallback to known locations
-        let candidates = [
+
+        candidates += [
             "/opt/homebrew/Caskroom/miniforge/base/bin/python3",
             "/opt/homebrew/bin/python3",
             "/usr/local/bin/python3",
             "/usr/bin/python3",
         ]
+
+        // Return the first Python that can actually import our dependencies.
+        for candidate in candidates {
+            guard FileManager.default.fileExists(atPath: candidate) else { continue }
+            let p = Process()
+            p.executableURL = URL(fileURLWithPath: candidate)
+            p.arguments = ["-c", "import requests, fitz, rmscene"]
+            p.standardOutput = Pipe()
+            p.standardError = Pipe()
+            if let _ = try? p.run() {
+                p.waitUntilExit()
+                if p.terminationStatus == 0 { return candidate }
+            }
+        }
+
+        // Nothing has deps yet — return first existing Python so install can run.
         return candidates.first { FileManager.default.fileExists(atPath: $0) } ?? "/usr/bin/python3"
     }
 
@@ -39,7 +64,7 @@ final class ExtractionService {
     }
 
     func installDependencies() async -> (success: Bool, error: String) {
-        let r = await run(python: ["-m", "pip", "install", "--user", "--quiet",
+        let r = await run(python: ["-m", "pip", "install", "--quiet",
                                    "requests", "pymupdf", "rmscene"])
         return (r.code == 0, r.stderr)
     }
