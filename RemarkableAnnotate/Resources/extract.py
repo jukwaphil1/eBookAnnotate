@@ -120,20 +120,22 @@ def cmd_list(host):
 
 
 def _collect_documents(host, folder_id, result):
-    """Recursively walk folders and collect all DocumentType entries."""
+    """Recursively walk folders and collect all document entries."""
     path = f"/documents/{folder_id}" if folder_id else "/documents/"
     try:
         items = get_json(host, path)
     except Exception:
         return
     for item in items:
-        if item.get("Type") == "DocumentType":
+        t = item.get("Type", "")
+        # Accept any type that looks like a document (not a folder/collection)
+        if "collection" in t.lower():
+            _collect_documents(host, item["ID"], result)
+        else:
             result.append({
                 "uuid": item["ID"],
                 "title": item.get("VissibleName", "Untitled"),
             })
-        elif item.get("Type") == "CollectionType":
-            _collect_documents(host, item["ID"], result)
 
 
 # ---------------------------------------------------------------------------
