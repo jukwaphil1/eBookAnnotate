@@ -46,10 +46,18 @@ struct ConnectionView: View {
                         .foregroundStyle(.red)
                         .multilineTextAlignment(.center)
                         .frame(maxWidth: 360)
+
+                    Button("Show Diagnostics") { vm.runDiagnostics() }
+                        .buttonStyle(.borderless)
+                        .foregroundStyle(.secondary)
+                        .font(.callout)
                 }
             }
         }
         .padding(32)
+        .sheet(isPresented: $vm.showDiagnostics) {
+            DiagnosticsView(output: vm.diagnosticOutput ?? "")
+        }
     }
 
     private var workingLabel: String {

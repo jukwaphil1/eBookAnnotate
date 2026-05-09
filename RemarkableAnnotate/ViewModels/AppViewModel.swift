@@ -17,6 +17,8 @@ final class AppViewModel {
     var state: State = .idle
     var extracting: String? = nil
     var lastResult: String? = nil
+    var diagnosticOutput: String? = nil
+    var showDiagnostics = false
 
     private let service = ExtractionService.shared
 
@@ -48,6 +50,14 @@ final class AppViewModel {
 
     func disconnect() {
         state = .idle
+    }
+
+    func runDiagnostics() {
+        diagnosticOutput = "Running…"
+        showDiagnostics = true
+        Task {
+            diagnosticOutput = await service.diagnostics()
+        }
     }
 
     func extract(document: RemarkableDocument) {

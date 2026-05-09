@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C42F8121C03196CB03C523C /* DiagnosticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B163463BD91C1235D2CF3E5 /* DiagnosticsView.swift */; };
 		40D4DCFF87B27ACEAD931799 /* DocumentListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E4210709C3524551B8E5A8 /* DocumentListView.swift */; };
 		52CEC0358568FF255B808455 /* ConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD82D27897A390F28F7EF1AC /* ConnectionView.swift */; };
 		69C50ECF623003FEF52DEF86 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25802F7420A31BB31C9D989E /* ContentView.swift */; };
@@ -23,6 +24,7 @@
 		309307E73E29CCF6D10007E1 /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
 		3154636E75C2A734F86C7EC4 /* RemarkableDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemarkableDocument.swift; sourceTree = "<group>"; };
 		45E4210709C3524551B8E5A8 /* DocumentListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentListView.swift; sourceTree = "<group>"; };
+		4B163463BD91C1235D2CF3E5 /* DiagnosticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosticsView.swift; sourceTree = "<group>"; };
 		CD82D27897A390F28F7EF1AC /* ConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionView.swift; sourceTree = "<group>"; };
 		CD8BA51AA80BF878BE088F69 /* RemarkableAnnotateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemarkableAnnotateApp.swift; sourceTree = "<group>"; };
 		E36D8FB5F68682971982E7A1 /* ExtractionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtractionService.swift; sourceTree = "<group>"; };
@@ -36,6 +38,7 @@
 			children = (
 				CD82D27897A390F28F7EF1AC /* ConnectionView.swift */,
 				25802F7420A31BB31C9D989E /* ContentView.swift */,
+				4B163463BD91C1235D2CF3E5 /* DiagnosticsView.swift */,
 				45E4210709C3524551B8E5A8 /* DocumentListView.swift */,
 			);
 			path = Views;
@@ -185,6 +188,7 @@
 				70CF289F55F90794AAC4F631 /* AppViewModel.swift in Sources */,
 				52CEC0358568FF255B808455 /* ConnectionView.swift in Sources */,
 				69C50ECF623003FEF52DEF86 /* ContentView.swift in Sources */,
+				0C42F8121C03196CB03C523C /* DiagnosticsView.swift in Sources */,
 				40D4DCFF87B27ACEAD931799 /* DocumentListView.swift in Sources */,
 				E49BF25BA5EE3EADF4A403B6 /* ExtractionService.swift in Sources */,
 				C19A816F926B6105FDE63E01 /* RemarkableAnnotateApp.swift in Sources */,
