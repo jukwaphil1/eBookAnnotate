@@ -11,6 +11,7 @@ targets:
     platform: macOS
     sources:
       - RemarkableAnnotate
+    assets: RemarkableAnnotate/Assets.xcassets
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jukwa.remarkableannotate
@@ -21,6 +22,7 @@ targets:
         CODE_SIGN_STYLE: Automatic
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_CFBundleDisplayName: RemarkableAnnotate
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         INFOPLIST_KEY_NSHumanReadableCopyright: ""
         CURRENT_PROJECT_VERSION: 1
         MARKETING_VERSION: 1.0

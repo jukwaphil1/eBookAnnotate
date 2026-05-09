@@ -41,12 +41,26 @@ struct DocumentListView: View {
                 .background(.red.opacity(0.06))
             }
 
-            List(nodes, children: \.optionalChildren) { node in
-                NodeRow(node: node, isExtracting: vm.extracting == node.id) {
-                    vm.extract(uuid: node.id, title: node.title)
+            if nodes.isEmpty {
+                Spacer()
+                VStack(spacing: 12) {
+                    Text("No documents found on device.")
+                        .foregroundStyle(.secondary)
+                    Text("Make sure the reMarkable is connected via USB and try again.")
+                        .font(.callout).foregroundStyle(.tertiary)
+                        .multilineTextAlignment(.center).frame(maxWidth: 320)
+                    Button("Try Again") { vm.connect() }
+                        .buttonStyle(.borderedProminent)
                 }
+                Spacer()
+            } else {
+                List(nodes, children: \.optionalChildren) { node in
+                    NodeRow(node: node, isExtracting: vm.extracting == node.id) {
+                        vm.extract(uuid: node.id, title: node.title)
+                    }
+                }
+                .listStyle(.inset)
             }
-            .listStyle(.inset)
         }
         .frame(minWidth: 480, minHeight: 360)
     }

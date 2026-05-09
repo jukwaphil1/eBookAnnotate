@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0C42F8121C03196CB03C523C /* DiagnosticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B163463BD91C1235D2CF3E5 /* DiagnosticsView.swift */; };
 		40D4DCFF87B27ACEAD931799 /* DocumentListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E4210709C3524551B8E5A8 /* DocumentListView.swift */; };
+		4D22C729EB4C5F65DAF0C403 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1FAAF2EF6F125DBFD3ADEB3B /* Assets.xcassets */; };
 		52CEC0358568FF255B808455 /* ConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD82D27897A390F28F7EF1AC /* ConnectionView.swift */; };
 		69C50ECF623003FEF52DEF86 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25802F7420A31BB31C9D989E /* ContentView.swift */; };
 		6C8D213465F0AFA81C513E91 /* extract.py in Resources */ = {isa = PBXBuildFile; fileRef = FABEA10C91931736AB08A157 /* extract.py */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1FAAF2EF6F125DBFD3ADEB3B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		25802F7420A31BB31C9D989E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		29835751331DB0F0F883FB21 /* RemarkableAnnotate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RemarkableAnnotate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		309307E73E29CCF6D10007E1 /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
@@ -87,6 +89,7 @@
 		B2093955BFA6F1C35EE5FD31 /* RemarkableAnnotate */ = {
 			isa = PBXGroup;
 			children = (
+				1FAAF2EF6F125DBFD3ADEB3B /* Assets.xcassets */,
 				F1189745504C001513B7CAF4 /* RemarkableAnnotate.entitlements */,
 				5D7543BC097CA409B206021A /* App */,
 				491B88E889E74F1004DD14B7 /* Models */,
@@ -174,6 +177,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4D22C729EB4C5F65DAF0C403 /* Assets.xcassets in Resources */,
 				6C8D213465F0AFA81C513E91 /* extract.py in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
