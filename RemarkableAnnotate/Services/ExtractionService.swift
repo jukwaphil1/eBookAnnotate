@@ -4,7 +4,24 @@ final class ExtractionService {
     static let shared = ExtractionService()
 
     private var pythonPath: String {
+        // Ask the shell for python3 so we respect the user's PATH / conda / pyenv / nvm etc.
+        let p = Process()
+        p.executableURL = URL(fileURLWithPath: "/bin/zsh")
+        p.arguments = ["-l", "-c", "which python3"]
+        let pipe = Pipe()
+        p.standardOutput = pipe
+        p.standardError = Pipe()
+        if let _ = try? p.run() {
+            p.waitUntilExit()
+            let out = String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8)?
+                .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            if !out.isEmpty && FileManager.default.fileExists(atPath: out) {
+                return out
+            }
+        }
+        // Fallback to known locations
         let candidates = [
+            "/opt/homebrew/Caskroom/miniforge/base/bin/python3",
             "/opt/homebrew/bin/python3",
             "/usr/local/bin/python3",
             "/usr/bin/python3",
