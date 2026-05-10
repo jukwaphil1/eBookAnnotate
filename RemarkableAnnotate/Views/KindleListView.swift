@@ -1,14 +1,13 @@
 import SwiftUI
 
-struct DocumentListView: View {
+struct KindleListView: View {
     @Bindable var vm: AppViewModel
-    let nodes: [DeviceNode]
-    @State private var selectedID: String? = nil
+    let books: [KindleBook]
 
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Text("reMarkable")
+                Text("Kindle")
                     .font(.headline)
                 Spacer()
                 Button("Disconnect", action: vm.disconnect)
@@ -42,26 +41,27 @@ struct DocumentListView: View {
                 .background(.red.opacity(0.06))
             }
 
-            if nodes.isEmpty {
+            if books.isEmpty {
                 Spacer()
                 VStack(spacing: 12) {
-                    Text("No documents found on device.")
+                    Text("No highlights found in Kindle clippings.")
                         .foregroundStyle(.secondary)
-                    Text("Make sure the reMarkable is connected via USB and try again.")
+                    Text("Make sure your Kindle is connected via USB.")
                         .font(.callout).foregroundStyle(.tertiary)
                         .multilineTextAlignment(.center).frame(maxWidth: 320)
-                    Button("Try Again") { vm.connect(source: .remarkable) }
+                    Button("Try Again") { vm.connect(source: .kindle) }
                         .buttonStyle(.borderedProminent)
                 }
                 Spacer()
             } else {
-                List(nodes, children: \.optionalChildren, selection: $selectedID) { node in
-                    NodeRow(node: node,
-                            isExtracting: vm.extracting == node.id,
-                            hasBeenExtracted: vm.extractedUUIDs.contains(node.id)) {
-                        vm.extract(uuid: node.id, title: node.title)
+                List(books) { book in
+                    KindleBookRow(
+                        book: book,
+                        isExtracting: vm.extracting == book.id,
+                        hasBeenExtracted: vm.extractedUUIDs.contains(book.id)
+                    ) {
+                        vm.extractKindle(book: book)
                     }
-                    .tag(node.id)
                 }
                 .listStyle(.inset)
             }
@@ -70,8 +70,8 @@ struct DocumentListView: View {
     }
 }
 
-private struct NodeRow: View {
-    let node: DeviceNode
+private struct KindleBookRow: View {
+    let book: KindleBook
     let isExtracting: Bool
     let hasBeenExtracted: Bool
     let onExtract: () -> Void
@@ -79,45 +79,38 @@ private struct NodeRow: View {
     var body: some View {
         HStack {
             Label {
-                Text(node.title)
-                    .foregroundStyle(hasBeenExtracted ? .primary : .secondary)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(book.title)
+                        .foregroundStyle(hasBeenExtracted ? .primary : .secondary)
+                    if !book.author.isEmpty {
+                        Text(book.author)
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                }
             } icon: {
-                Image(systemName: iconName)
-                    .foregroundStyle(iconColor)
+                Image(systemName: hasBeenExtracted ? "book.fill" : "book")
+                    .foregroundStyle(hasBeenExtracted ? Color.accentColor : Color.secondary)
             }
 
             Spacer()
 
-            if case .document = node {
-                if isExtracting {
-                    ProgressView().scaleEffect(0.7)
-                } else {
-                    Button("Extract", action: onExtract)
-                        .font(.callout)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
-                        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 5))
-                        .buttonStyle(.plain)
-                }
+            Text("\(book.highlightCount) highlight\(book.highlightCount == 1 ? "" : "s")")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+                .padding(.trailing, 8)
+
+            if isExtracting {
+                ProgressView().scaleEffect(0.7)
+            } else {
+                Button("Extract", action: onExtract)
+                    .font(.callout)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 5))
+                    .buttonStyle(.plain)
             }
         }
         .padding(.vertical, 2)
-    }
-
-    private var iconName: String {
-        if case .folder = node { return "folder.fill" }
-        return hasBeenExtracted ? "doc.text.fill" : "doc.text"
-    }
-
-    private var iconColor: Color {
-        if case .folder = node { return .yellow }
-        return hasBeenExtracted ? .accentColor : .secondary
-    }
-}
-
-private extension DeviceNode {
-    var optionalChildren: [DeviceNode]? {
-        if case .folder(_, _, let children) = self { return children.isEmpty ? nil : children }
-        return nil
     }
 }

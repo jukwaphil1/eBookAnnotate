@@ -7,5 +7,9 @@ struct RemarkableAnnotateApp: App {
             ContentView()
         }
         .windowResizability(.contentSize)
+
+        Settings {
+            SettingsView()
+        }
     }
 }

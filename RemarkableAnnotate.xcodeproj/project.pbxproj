@@ -8,25 +8,35 @@
 
 /* Begin PBXBuildFile section */
 		0C42F8121C03196CB03C523C /* DiagnosticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B163463BD91C1235D2CF3E5 /* DiagnosticsView.swift */; };
+		269884306B6EA1B3567B0CFE /* KindleListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40B43D7E3AF2DC3B0DA5B607 /* KindleListView.swift */; };
 		40D4DCFF87B27ACEAD931799 /* DocumentListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E4210709C3524551B8E5A8 /* DocumentListView.swift */; };
 		4D22C729EB4C5F65DAF0C403 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1FAAF2EF6F125DBFD3ADEB3B /* Assets.xcassets */; };
 		52CEC0358568FF255B808455 /* ConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD82D27897A390F28F7EF1AC /* ConnectionView.swift */; };
+		533215CCCDA34390C787AFEF /* extract.cpython-312.pyc in Resources */ = {isa = PBXBuildFile; fileRef = 03B785852F442C001295C2E0 /* extract.cpython-312.pyc */; };
 		69C50ECF623003FEF52DEF86 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25802F7420A31BB31C9D989E /* ContentView.swift */; };
 		6C8D213465F0AFA81C513E91 /* extract.py in Resources */ = {isa = PBXBuildFile; fileRef = FABEA10C91931736AB08A157 /* extract.py */; };
 		70CF289F55F90794AAC4F631 /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309307E73E29CCF6D10007E1 /* AppViewModel.swift */; };
+		78D29B7CD00F25E0A5EFF5C1 /* KindleBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C099797430C9C9906CAAC6 /* KindleBook.swift */; };
 		A6258695E9645FC78BCC687C /* RemarkableDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3154636E75C2A734F86C7EC4 /* RemarkableDocument.swift */; };
+		B3C26DDB70BECF5871251D81 /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 41A017FA45ED5DDA111BFED8 /* AppIcon.icns */; };
 		C19A816F926B6105FDE63E01 /* RemarkableAnnotateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD8BA51AA80BF878BE088F69 /* RemarkableAnnotateApp.swift */; };
 		E49BF25BA5EE3EADF4A403B6 /* ExtractionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E36D8FB5F68682971982E7A1 /* ExtractionService.swift */; };
+		EFEA5F07CC0938172732A34A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6669595350A9288494387F72 /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		03B785852F442C001295C2E0 /* extract.cpython-312.pyc */ = {isa = PBXFileReference; path = "extract.cpython-312.pyc"; sourceTree = "<group>"; };
 		1FAAF2EF6F125DBFD3ADEB3B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		25802F7420A31BB31C9D989E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		29835751331DB0F0F883FB21 /* RemarkableAnnotate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RemarkableAnnotate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		309307E73E29CCF6D10007E1 /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
 		3154636E75C2A734F86C7EC4 /* RemarkableDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemarkableDocument.swift; sourceTree = "<group>"; };
+		32C099797430C9C9906CAAC6 /* KindleBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindleBook.swift; sourceTree = "<group>"; };
+		40B43D7E3AF2DC3B0DA5B607 /* KindleListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindleListView.swift; sourceTree = "<group>"; };
+		41A017FA45ED5DDA111BFED8 /* AppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = AppIcon.icns; sourceTree = "<group>"; };
 		45E4210709C3524551B8E5A8 /* DocumentListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentListView.swift; sourceTree = "<group>"; };
 		4B163463BD91C1235D2CF3E5 /* DiagnosticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosticsView.swift; sourceTree = "<group>"; };
+		6669595350A9288494387F72 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		CD82D27897A390F28F7EF1AC /* ConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionView.swift; sourceTree = "<group>"; };
 		CD8BA51AA80BF878BE088F69 /* RemarkableAnnotateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemarkableAnnotateApp.swift; sourceTree = "<group>"; };
 		E36D8FB5F68682971982E7A1 /* ExtractionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtractionService.swift; sourceTree = "<group>"; };
@@ -42,6 +52,8 @@
 				25802F7420A31BB31C9D989E /* ContentView.swift */,
 				4B163463BD91C1235D2CF3E5 /* DiagnosticsView.swift */,
 				45E4210709C3524551B8E5A8 /* DocumentListView.swift */,
+				40B43D7E3AF2DC3B0DA5B607 /* KindleListView.swift */,
+				6669595350A9288494387F72 /* SettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -49,7 +61,9 @@
 		1F1995EC080B033B722B93A5 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				41A017FA45ED5DDA111BFED8 /* AppIcon.icns */,
 				FABEA10C91931736AB08A157 /* extract.py */,
+				F0044B8DD36CDBB5A165C6E5 /* __pycache__ */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -57,6 +71,7 @@
 		491B88E889E74F1004DD14B7 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				32C099797430C9C9906CAAC6 /* KindleBook.swift */,
 				3154636E75C2A734F86C7EC4 /* RemarkableDocument.swift */,
 			);
 			path = Models;
@@ -115,6 +130,14 @@
 				29835751331DB0F0F883FB21 /* RemarkableAnnotate.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		F0044B8DD36CDBB5A165C6E5 /* __pycache__ */ = {
+			isa = PBXGroup;
+			children = (
+				03B785852F442C001295C2E0 /* extract.cpython-312.pyc */,
+			);
+			path = __pycache__;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -177,7 +200,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B3C26DDB70BECF5871251D81 /* AppIcon.icns in Resources */,
 				4D22C729EB4C5F65DAF0C403 /* Assets.xcassets in Resources */,
+				533215CCCDA34390C787AFEF /* extract.cpython-312.pyc in Resources */,
 				6C8D213465F0AFA81C513E91 /* extract.py in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -195,8 +220,11 @@
 				0C42F8121C03196CB03C523C /* DiagnosticsView.swift in Sources */,
 				40D4DCFF87B27ACEAD931799 /* DocumentListView.swift in Sources */,
 				E49BF25BA5EE3EADF4A403B6 /* ExtractionService.swift in Sources */,
+				78D29B7CD00F25E0A5EFF5C1 /* KindleBook.swift in Sources */,
+				269884306B6EA1B3567B0CFE /* KindleListView.swift in Sources */,
 				C19A816F926B6105FDE63E01 /* RemarkableAnnotateApp.swift in Sources */,
 				A6258695E9645FC78BCC687C /* RemarkableDocument.swift in Sources */,
+				EFEA5F07CC0938172732A34A /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,19 +294,20 @@
 				CODE_SIGN_ENTITLEMENTS = RemarkableAnnotate/RemarkableAnnotate.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_TEAM = 5RX8NB9H37;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = RemarkableAnnotate;
+				ICON_FILE = AppIcon;
+				INFOPLIST_KEY_CFBundleDisplayName = "eBook Annotate";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jukwa.remarkableannotate;
-				PRODUCT_NAME = RemarkableAnnotate;
+				PRODUCT_NAME = eBookAnnotate;
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.9;
 			};
@@ -354,19 +383,20 @@
 				CODE_SIGN_ENTITLEMENTS = RemarkableAnnotate/RemarkableAnnotate.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_TEAM = 5RX8NB9H37;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = RemarkableAnnotate;
+				ICON_FILE = AppIcon;
+				INFOPLIST_KEY_CFBundleDisplayName = "eBook Annotate";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jukwa.remarkableannotate;
-				PRODUCT_NAME = RemarkableAnnotate;
+				PRODUCT_NAME = eBookAnnotate;
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.9;
 			};

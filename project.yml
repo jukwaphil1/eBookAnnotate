@@ -15,15 +15,15 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jukwa.remarkableannotate
-        PRODUCT_NAME: RemarkableAnnotate
+        PRODUCT_NAME: eBookAnnotate
         SWIFT_VERSION: "5.9"
         MACOSX_DEPLOYMENT_TARGET: "14.0"
         DEVELOPMENT_TEAM: 5RX8NB9H37
         CODE_SIGN_STYLE: Automatic
         GENERATE_INFOPLIST_FILE: YES
-        INFOPLIST_KEY_CFBundleDisplayName: RemarkableAnnotate
-        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        INFOPLIST_KEY_CFBundleDisplayName: eBook Annotate
+        ICON_FILE: AppIcon
         INFOPLIST_KEY_NSHumanReadableCopyright: ""
-        CURRENT_PROJECT_VERSION: 1
-        MARKETING_VERSION: 1.0
+        CURRENT_PROJECT_VERSION: 27
+        MARKETING_VERSION: 3.6
         CODE_SIGN_ENTITLEMENTS: RemarkableAnnotate/RemarkableAnnotate.entitlements

@@ -57,7 +57,9 @@ final class ExtractionService {
     // MARK: - Public
 
     func diagnostics(host: String) async -> String {
-        var lines: [String] = ["=== RemarkableAnnotate diagnostics ==="]
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "?"
+        var lines: [String] = ["=== RemarkableAnnotate \(version) (build \(build)) ==="]
 
         let whichResult = shellOutput("/bin/zsh", ["-l", "-c", "which python3"])
         lines.append("login-shell which python3: \(whichResult.trimmingCharacters(in: .whitespacesAndNewlines))")
@@ -72,7 +74,7 @@ final class ExtractionService {
         let ver = await run(python: ["--version"])
         lines.append("python version: \((ver.stdout + ver.stderr).trimmingCharacters(in: .whitespacesAndNewlines))")
 
-        let imp = await run(python: ["-c", "import requests, fitz, rmscene; print('imports ok')"])
+        let imp = await run(python: ["-c", "import requests, rmscene; print('imports ok')"])
         lines.append("import check (exit \(imp.code)): \((imp.stdout + imp.stderr).trimmingCharacters(in: .whitespacesAndNewlines))")
 
         lines.append("script path: \(scriptPath)")
@@ -88,22 +90,70 @@ final class ExtractionService {
         return lines.joined(separator: "\n")
     }
 
+    func checkRemarkable(host: String) async -> Bool {
+        guard let url = URL(string: "http://\(host)/documents/") else { return false }
+        let request = URLRequest(url: url, timeoutInterval: 3)
+        do {
+            let (_, response) = try await URLSession.shared.data(for: request)
+            return (response as? HTTPURLResponse)?.statusCode == 200
+        } catch {
+            return false
+        }
+    }
+
+    func findKindleClippings() -> String? {
+        let fm = FileManager.default
+        guard let vols = try? fm.contentsOfDirectory(atPath: "/Volumes") else { return nil }
+        for vol in vols {
+            let path = "/Volumes/\(vol)/documents/My Clippings.txt"
+            if fm.fileExists(atPath: path) { return path }
+        }
+        return nil
+    }
+
     func checkDependencies() async -> Bool {
-        let r = await run(python: ["-c", "import requests, fitz, rmscene"])
+        let r = await run(python: ["-c", "import requests, rmscene, docx"])
         return r.code == 0
     }
 
     func installDependencies() async -> (success: Bool, error: String) {
         let r = await run(python: ["-m", "pip", "install", "--quiet",
-                                   "requests", "pymupdf", "rmscene"])
+                                   "requests", "rmscene", "python-docx"])
         return (r.code == 0, r.stderr.isEmpty ? r.stdout : r.stderr)
+    }
+
+    func listKindleBooks(clippingsPath: String) async -> Result<[KindleBook], Error> {
+        let r = await run(script: ["kindle-list", clippingsPath])
+        guard r.code == 0 else { return .failure(scriptError(from: r)) }
+        struct BookJSON: Decodable { let title: String; let author: String; let highlight_count: Int }
+        struct R: Decodable { let books: [BookJSON] }
+        guard let data = r.stdout.data(using: .utf8) else { return .failure(AppError("Empty response")) }
+        do {
+            let decoded = try JSONDecoder().decode(R.self, from: data)
+            let books = decoded.books.map { b in
+                KindleBook(id: b.title, title: b.title, author: b.author,
+                           highlightCount: b.highlight_count, clippingsPath: clippingsPath)
+            }
+            return .success(books)
+        } catch {
+            return .failure(error)
+        }
+    }
+
+    func extractKindleBook(clippingsPath: String, bookTitle: String, to url: URL) async -> Result<Int, Error> {
+        let r = await run(script: ["kindle-extract", clippingsPath, bookTitle, url.path])
+        guard r.code == 0 else { return .failure(scriptError(from: r)) }
+        if let data = r.stdout.data(using: .utf8),
+           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+           let count = json["highlight_count"] as? Int {
+            return .success(count)
+        }
+        return .success(0)
     }
 
     func listTree(host: String) async -> Result<[DeviceNode], Error> {
         let r = await run(script: ["list", host])
-        guard r.code == 0 else {
-            return .failure(AppError(r.stderr.isEmpty ? r.stdout : r.stderr))
-        }
+        guard r.code == 0 else { return .failure(scriptError(from: r)) }
         struct R: Decodable { let tree: [DeviceNode] }
         guard let data = r.stdout.data(using: .utf8) else { return .failure(AppError("Empty response")) }
         do {
@@ -113,10 +163,11 @@ final class ExtractionService {
         }
     }
 
-    func extractDocument(host: String, uuid: String, to url: URL) async -> Result<Int, Error> {
-        let r = await run(script: ["extract", host, uuid, url.path])
-        guard r.code == 0 else {
-            return .failure(AppError(r.stderr.isEmpty ? r.stdout : r.stderr))
+    func extractDocument(host: String, uuid: String, title: String, to url: URL) async -> Result<Int, Error> {
+        let r = await run(script: ["extract", host, uuid, url.path, title])
+        guard r.code == 0 else { return .failure(scriptError(from: r)) }
+        if !r.stderr.isEmpty {
+            _lastExtractionDebug = r.stderr
         }
         if let data = r.stdout.data(using: .utf8),
            let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
@@ -124,6 +175,18 @@ final class ExtractionService {
             return .success(count)
         }
         return .success(0)
+    }
+
+    private(set) var _lastExtractionDebug: String = ""
+
+    private func scriptError(from r: RunResult) -> ScriptError {
+        let raw = r.stdout.isEmpty ? r.stderr : r.stdout
+        if let data = raw.data(using: .utf8),
+           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+           let msg = json["message"] as? String {
+            return ScriptError(message: msg, raw: raw)
+        }
+        return ScriptError(message: raw.isEmpty ? "Unknown error (exit \(r.code))" : raw, raw: raw)
     }
 
     // MARK: - Private
@@ -174,4 +237,13 @@ final class ExtractionService {
 struct AppError: LocalizedError {
     let errorDescription: String?
     init(_ msg: String) { errorDescription = msg.isEmpty ? "Unknown error" : msg }
+}
+
+struct ScriptError: LocalizedError {
+    let errorDescription: String?
+    let raw: String
+    init(message: String, raw: String) {
+        errorDescription = message.isEmpty ? "Unknown error" : message
+        self.raw = raw
+    }
 }
