@@ -18,12 +18,18 @@ struct ConnectionView: View {
             }
 
             if case .error(let msg) = vm.state {
-                Text(msg)
-                    .font(.callout)
-                    .foregroundStyle(.red)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: 360)
-                    .lineLimit(4)
+                VStack(spacing: 12) {
+                    Text(msg)
+                        .font(.callout)
+                        .foregroundStyle(.red)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: 420)
+
+                    if msg.localizedCaseInsensitiveContains("remarkable") {
+                        RemarkableHelpBox()
+                    }
+                }
             }
 
             HStack(alignment: .top, spacing: 16) {
@@ -51,6 +57,31 @@ struct ConnectionView: View {
         }
         .padding(32)
         .onAppear { vm.detectDevices() }
+    }
+}
+
+private struct RemarkableHelpBox: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Enable the USB web interface on your reMarkable")
+                .font(.callout.weight(.semibold))
+
+            VStack(alignment: .leading, spacing: 4) {
+                Label("Wake the tablet (it must be awake to connect)", systemImage: "1.circle")
+                Label("Open Menu → Settings → Storage", systemImage: "2.circle")
+                Label("Toggle \"USB web interface\" on", systemImage: "3.circle")
+                Label("Plug in with a data-capable USB-C cable", systemImage: "4.circle")
+            }
+            .font(.callout)
+            .foregroundStyle(.secondary)
+        }
+        .padding(14)
+        .frame(maxWidth: 420, alignment: .leading)
+        .background(Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 10))
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(Color.primary.opacity(0.08), lineWidth: 1)
+        )
     }
 }
 

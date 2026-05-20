@@ -117,8 +117,8 @@ final class ExtractionService {
     }
 
     func installDependencies() async -> (success: Bool, error: String) {
-        let r = await run(python: ["-m", "pip", "install", "--quiet",
-                                   "requests", "rmscene", "python-docx"])
+        let r = await run(python: ["-m", "pip", "install", "--quiet", "--break-system-packages",
+                                   "requests", "rmscene", "python-docx", "PyMuPDF"])
         return (r.code == 0, r.stderr.isEmpty ? r.stdout : r.stderr)
     }
 
